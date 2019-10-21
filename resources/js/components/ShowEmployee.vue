@@ -104,9 +104,10 @@
                                         </div>
 
                                 </div>
+
                                 <div class="modal-footer">
                                     <button type="button" @click="closeEditMode" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary">Save changes</button>
+                                    <button type="button" @click="updateEmployee(editedEmployee.id)" class="btn btn-primary">Save changes</button>
                                 </div>
                                 </form>
                                 </div>
@@ -129,22 +130,16 @@
 
         data(){
             return{
-
             detail : {},
             editedEmployee: {},
-
             path : '/img/photos/',
             companies : {},
-
             }
-
-
     },
 
     methods: {
 
         viewDetail(empl){
-
             $('#viewModal').modal('show');
             this.detail = empl
         },
@@ -157,17 +152,18 @@
             $('#EditModal').modal('show');
             this.editedEmployee = edEmploy
         },
+
         closeEditMode(){
             this.editedEmployee = {},
             $('#EditModal').modal('hide');
         },
+
         getCompany(){
                 axios.get('/api/company')
 				.then(({data}) => {
                     console.log(data)
                     //  console.log("url"+response.data.data.imageBaseUrl)
                     this.companies = data
-
                 })
                 .catch((error)=> {
                     console.log(error.response.data.error)
@@ -176,9 +172,10 @@
             editImage(){
 
             },
-            updateEmployee(){
 
-        axios.post(`'/api/employee',{emp.id}`)
+            updateEmployee(toUpdate){
+
+        axios.put(`/api/employee/${toUpdate}`,this.editedEmployee)
         .then(({data}) => {
                     //this.users = response.data
                     console.log(data)
@@ -201,17 +198,29 @@
                 console.log('yes')
                 axios.delete('/api/employee/' + toDelete)
                 .then( (response) => {
+                   // getEmployee()
                     alert('deleted');
                 }).catch((error) => {
-
+                    console.log(error)
             })
-
-
             }else{
                 console.log('noo');
             }
-
         },
+        getEmployee()
+        {
+            axios.get('/api/employee')
+				.then(({data}) => {
+                    console.log(data)
+                    //  console.log("url"+response.data.data.imageBaseUrl)
+                    this.employees = data
+
+                })
+                .catch((error)=> {
+                    console.log(error.response.data.error)
+                })
+        },
+
 
 
 

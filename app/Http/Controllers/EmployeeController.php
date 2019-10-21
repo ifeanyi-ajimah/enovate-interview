@@ -97,9 +97,32 @@ class EmployeeController extends Controller
      * @param  \App\Employee  $employee
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Employee $employee)
+    public function update(Request $request,  $employee)
     {
-        //
+        $this->validate($request,[
+            'name' => 'required',
+            'email' => 'required',
+            'phone' => 'required',
+            'photo' => 'required',
+            'company_id' => 'required',
+        ]);
+
+
+        $imageName = time(). '.' . explode('/', explode(':', substr($request->photo,0,strpos
+        ($request->photo, ';'))) [1] ) [1];
+        \Image::make($request->photo)->save( public_path('img/photos/').$imageName );
+           //$request->merge(['photo' => $imageName]);
+
+           $request->photo = $imageName;
+
+        $emp = Employee::find($employee);
+        $emp->name = $request->name;
+        $emp->email = $request->email;
+        $emp->phone = $request->phone;
+        $emp->photo = $imageName;
+        $emp->company_id = $request->company_id;
+
+
     }
 
     /**
@@ -111,10 +134,8 @@ class EmployeeController extends Controller
 
     public function destroy($id)
     {
-
         $employee = Employee::findOrFail($id);
         $employee->delete();
-
         return ['message' => 'emplo$employee Deleted'];
     }
 }

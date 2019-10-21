@@ -2265,6 +2265,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['employees'],
   mounted: function mounted() {
@@ -2306,10 +2307,10 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     editImage: function editImage() {},
-    updateEmployee: function updateEmployee() {
+    updateEmployee: function updateEmployee(toUpdate) {
       var _this2 = this;
 
-      axios.post("'/api/employee',{emp.id}").then(function (_ref2) {
+      axios.put("/api/employee/".concat(toUpdate), this.editedEmployee).then(function (_ref2) {
         var data = _ref2.data;
         //this.users = response.data
         console.log(data);
@@ -2327,11 +2328,26 @@ __webpack_require__.r(__webpack_exports__);
       if (result) {
         console.log('yes');
         axios["delete"]('/api/employee/' + toDelete).then(function (response) {
+          // getEmployee()
           alert('deleted');
-        })["catch"](function (error) {});
+        })["catch"](function (error) {
+          console.log(error);
+        });
       } else {
         console.log('noo');
       }
+    },
+    getEmployee: function getEmployee() {
+      var _this3 = this;
+
+      axios.get('/api/employee').then(function (_ref3) {
+        var data = _ref3.data;
+        console.log(data); //  console.log("url"+response.data.data.imageBaseUrl)
+
+        _this3.employees = data;
+      })["catch"](function (error) {
+        console.log(error.response.data.error);
+      });
     }
   }
 });
@@ -38499,7 +38515,12 @@ var render = function() {
                     "button",
                     {
                       staticClass: "btn btn-primary",
-                      attrs: { type: "button" }
+                      attrs: { type: "button" },
+                      on: {
+                        click: function($event) {
+                          return _vm.updateEmployee(_vm.editedEmployee.id)
+                        }
+                      }
                     },
                     [_vm._v("Save changes")]
                   )
